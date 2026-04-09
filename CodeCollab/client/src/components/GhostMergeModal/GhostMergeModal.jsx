@@ -8,36 +8,36 @@ import styles from './GhostMergeModal.module.css';
 const GhostMergeModal = ({ socket, roomId }) => {
   const dispatch = useDispatch();
   const { pendingProposals, mainCode } = useSelector(state => state.room);
-  
+
   if (!pendingProposals || pendingProposals.length === 0) return null;
-  
+
   const currentProposal = pendingProposals[0];
 
   const handleAccept = () => {
     dispatch(updateMainCode(currentProposal.codeDiff));
     if (socket) {
       socket.emit('code:delta', { roomId, delta: currentProposal.codeDiff });
-      socket.emit('ghost:accepted', { roomId, proposerName: currentProposal.username });
+      socket.emit('ghost:accepted', { roomId });
     }
-    dispatch(resolveProposal(currentProposal.senderId));
+    dispatch(resolveProposal(currentProposal.senderUsername));
   };
 
   const handleReject = () => {
     if (socket) {
-      socket.emit('ghost:rejected', { roomId, proposerName: currentProposal.username });
+      socket.emit('ghost:rejected', { roomId });
     }
-    dispatch(resolveProposal(currentProposal.senderId));
+    dispatch(resolveProposal(currentProposal.senderUsername));
   };
 
   return (
     <AnimatePresence>
-      <motion.div 
+      <motion.div
         className={styles.modalOverlay}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
-        <motion.div 
+        <motion.div
           className={styles.modalContent}
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -45,7 +45,7 @@ const GhostMergeModal = ({ socket, roomId }) => {
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
         >
           <div className={styles.modalHeader}>
-            <h3>Merge Proposal from <span>{currentProposal.username}</span></h3>
+            <h3>Merge Proposal from <span>{currentProposal.senderUsername}</span></h3>
             <div className={styles.headerRight}>
               {pendingProposals.length > 1 && (
                 <span className={styles.queueBadge}>{pendingProposals.length} pending</span>
@@ -59,7 +59,7 @@ const GhostMergeModal = ({ socket, roomId }) => {
               theme="vs-dark"
               original={mainCode}
               modified={currentProposal.codeDiff}
-              options={{ 
+              options={{
                 readOnly: true,
                 minimap: { enabled: false },
                 fontFamily: "'JetBrains Mono', monospace",

@@ -2,14 +2,15 @@ import React, { useRef, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Navbar } from '../../components/Navbar/Navbar';
 import EditorComponent from '../../components/Editor/Editor';
 import Terminal from '../../components/Terminal/Terminal';
-import { 
-  setVideoProgress, 
-  setPlaying, 
-  enterSandbox, 
-  updateSandboxCode, 
-  resumeLecture 
+import {
+  setVideoProgress,
+  setPlaying,
+  enterSandbox,
+  updateSandboxCode,
+  resumeLecture
 } from '../../store/lectureSlice';
 import { executeCodeThunk, setLanguage } from '../../store/executionSlice';
 import { DUMMY_LECTURE } from '../../utils/dummyLectureData';
@@ -21,7 +22,7 @@ export const Lecture = () => {
   const videoRef = useRef(null);
   const { isPlaying, isSandboxMode, sandboxCode, playbackCode } = useSelector(state => state.lecture);
   const { isExecuting } = useSelector(state => state.execution);
-  
+
   useEffect(() => {
     dispatch(setLanguage(DUMMY_LECTURE.baseLanguage));
   }, [dispatch]);
@@ -30,7 +31,7 @@ export const Lecture = () => {
     const video = videoRef.current;
     if (!video) return;
     if (isPlaying) {
-      video.play().catch(() => {});
+      video.play().catch(() => { });
     } else {
       video.pause();
     }
@@ -71,15 +72,11 @@ export const Lecture = () => {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <header className={styles.header}>
-        <span className={styles.brand} onClick={() => navigate('/')} style={{cursor:'pointer'}}>CodeCollab</span>
-        <span className={styles.headerTitle}>Learning Mode</span>
-        <span className={styles.headerBadge}>DEMO</span>
-      </header>
+      <Navbar />
 
       {/* Sandbox Banner */}
       {isSandboxMode && (
-        <motion.div 
+        <motion.div
           className={styles.sandboxBanner}
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
@@ -96,7 +93,7 @@ export const Lecture = () => {
         {/* LEFT: Video Player */}
         <section className={styles.videoSection}>
           <div className={styles.playerWrapper}>
-            <video 
+            <video
               ref={videoRef}
               src={DUMMY_LECTURE.videoUrl}
               controls
@@ -107,12 +104,12 @@ export const Lecture = () => {
               className={styles.videoElement}
             />
           </div>
-          
+
           <div className={styles.lectureDetails}>
             <h2>{DUMMY_LECTURE.title}</h2>
             <span className={styles.lectureTag}>Interactive Learning Mode</span>
-            <p>Code auto-syncs with the video timeline. Edit the code to fork into a sandbox. 
-               Click "Resume Lecture" to snap back to the instructor's timeline.</p>
+            <p>Code auto-syncs with the video timeline. Edit the code to fork into a sandbox.
+              Click "Resume Lecture" to snap back to the instructor's timeline.</p>
             <div className={styles.lectureInfo}>
               <span>Language: {DUMMY_LECTURE.baseLanguage}</span>
               <span>•</span>
@@ -127,8 +124,8 @@ export const Lecture = () => {
             <span>{DUMMY_LECTURE.baseLanguage} Sandbox</span>
             <div className={styles.ideActions}>
               <span className={styles.shortcutHint}>Ctrl+Enter to run</span>
-              <button 
-                className={styles.runBtn} 
+              <button
+                className={styles.runBtn}
                 onClick={handleRunCode}
                 disabled={isExecuting}
               >
@@ -137,8 +134,8 @@ export const Lecture = () => {
             </div>
           </div>
           <div className={styles.editorWrapper}>
-            <EditorComponent 
-              overrideCode={codeToDisplay} 
+            <EditorComponent
+              overrideCode={codeToDisplay}
               isScratchpad={true}
               isDriver={true}
               onCodeChange={handleEditorChange}

@@ -3,7 +3,7 @@
   border-radius: 6px;
   border: 1px solid var(--border-muted);
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   text-align: left;
 }
 
@@ -27,9 +27,17 @@
   border-radius: 50%;
 }
 
-.dotRed { background-color: #ff5f56; }
-.dotYellow { background-color: #ffbd2e; }
-.dotGreen { background-color: #27c93f; }
+.dotRed {
+  background-color: #ff5f56;
+}
+
+.dotYellow {
+  background-color: #ffbd2e;
+}
+
+.dotGreen {
+  background-color: #27c93f;
+}
 
 .title {
   color: var(--text-secondary);
@@ -51,16 +59,49 @@
   height: 8px;
   background-color: var(--accent-success);
   border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .body {
   padding: 20px;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-primary);
-  min-height: 200px;
+  min-height: 240px;
 }
 
 .line {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+}
+
+.command {
+  color: var(--accent-primary);
+}
+
+.info {
+  color: var(--text-secondary);
+}
+
+.success {
+  color: var(--accent-success);
+}
+
+.log {
+  color: var(--accent-warning);
+}
+
+.prompt {
+  color: var(--text-muted);
 }

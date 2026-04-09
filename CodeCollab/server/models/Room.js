@@ -5,25 +5,33 @@ const roomSchema = new mongoose.Schema({
   roomType: { type: String, enum: ['pair', 'lecture'], required: true },
   title: { type: String, default: 'Untitled Room' },
   language: { type: String, default: 'javascript' },
-  
+
+  // Who created this room
+  createdBy: { type: String, default: '' },
+
+  // All users who have ever joined this room (persistent, never cleared)
+  members: [{ type: String }],
+
   // Current state
   mainCode: { type: String, default: '' },
-  
-  // Participants
+
+  // Participants — keyed by username (not socket ID)
   participants: [{
-    socketId: String,
-    username: String,
+    username: { type: String, required: true },
     role: { type: String, enum: ['driver', 'navigator', 'viewer'] },
     joinedAt: Date,
     scratchpadCode: { type: String, default: '' }
   }],
-  
-  // Driver tracking
-  currentDriverId: { type: String, default: null },
-  
+
+  // Driver tracking — now by username
+  currentDriverUsername: { type: String, default: null },
+
   // Metadata
   createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, default: () => Date.now() + 24*60*60*1000 } // 24h TTL
+  expiresAt: { type: Date, default: () => Date.now() + 24 * 60 * 60 * 1000 }
 });
+
+// Auto-delete rooms after expiresAt timestamp
+roomSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model('Room', roomSchema);

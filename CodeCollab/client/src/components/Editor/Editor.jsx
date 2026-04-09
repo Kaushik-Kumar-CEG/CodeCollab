@@ -3,7 +3,7 @@ import MonacoEditor from '@monaco-editor/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateMainCode, updateScratchpadCode } from '../../store/roomSlice';
 
-const EditorComponent = ({ socket, roomId, isDriver, isScratchpad, overrideCode, targetSocketId, onCodeChange, onRunCode }) => {
+const EditorComponent = ({ socket, roomId, isDriver, isScratchpad, overrideCode, targetSocketId, onCodeChange, onRunCode, onSelectionChange }) => {
   const monacoRef = useRef(null);
   const dispatch = useDispatch();
   const mainCode = useSelector(state => state.room.mainCode);
@@ -21,6 +21,19 @@ const EditorComponent = ({ socket, roomId, isDriver, isScratchpad, overrideCode,
         if (onRunCode) onRunCode();
       }
     });
+
+    // Track selection changes for block commenting
+    if (onSelectionChange) {
+      editor.onDidChangeCursorSelection((e) => {
+        const sel = e.selection;
+        if (sel.startLineNumber !== sel.endLineNumber || sel.startColumn !== sel.endColumn) {
+          onSelectionChange({
+            lineStart: sel.startLineNumber,
+            lineEnd: sel.endLineNumber
+          });
+        }
+      });
+    }
   };
 
   const handleEditorChange = (value) => {

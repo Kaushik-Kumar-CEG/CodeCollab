@@ -1,31 +1,26 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import styles from './TerminalMock.module.css';
 
 export const TerminalMock = () => {
-  const [lines, setLines] = useState([
-    { id: 1, text: 'user@dev:~/project$ codecollab start --mode pair', type: 'command' },
-  ]);
+  const { logs } = useSelector(state => state.activityLog);
 
-  useEffect(() => {
-    // Sequence of mocked output
-    const sequence = [
-      { delay: 1000, text: '🧠 Initializing CodeCollab workspace...', type: 'info' },
-      { delay: 2000, text: '⚡ Connecting to real-time sync server...', type: 'info' },
-      { delay: 2500, text: '✓ Room created: https://codecollab.dev/room/d8fj3', type: 'success' },
-      { delay: 3500, text: 'user@dev:~/project$ ', type: 'prompt' }
-    ];
+  const defaultLines = [
+    { id: 'default-1', text: '$ codecollab --init', type: 'command', timestamp: '' },
+    { id: 'default-2', text: '✓ connected to codecollab server', type: 'success', timestamp: '' },
+    { id: 'default-3', text: 'Waiting for activity...', type: 'info', timestamp: '' },
+  ];
 
-    let currentDelay = 0;
-    const timeouts = sequence.map((item, index) => {
-      currentDelay += item.delay;
-      return setTimeout(() => {
-        setLines(prev => [...prev, { id: index + 2, text: item.text, type: item.type }]);
-      }, currentDelay);
-    });
-
-    return () => timeouts.forEach(clearTimeout);
-  }, []);
+  const displayLines = logs.length > 0
+    ? [
+      ...defaultLines,
+      ...logs.map(log => ({
+        id: log.id,
+        text: `[${log.timestamp}] ${log.text}`,
+        type: log.type
+      }))
+    ]
+    : defaultLines;
 
   return (
     <div className={styles.terminal}>
@@ -35,14 +30,14 @@ export const TerminalMock = () => {
           <span className={styles.dotYellow}></span>
           <span className={styles.dotGreen}></span>
         </div>
-        <div className={styles.title}>codecollab-terminal</div>
+        <div className={styles.title}>codecollab — activity log</div>
         <div className={styles.liveBadge}><span className={styles.liveDot}></span>LIVE</div>
       </div>
       <div className={styles.body}>
-        {lines.map((line) => (
-          <motion.div 
-            key={line.id} 
-            className={styles.line}
+        {displayLines.map((line) => (
+          <motion.div
+            key={line.id}
+            className={`${styles.line} ${styles[line.type] || ''}`}
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}

@@ -6,8 +6,11 @@ import dotenv from 'dotenv';
 
 import { connectDB } from './config/db.js';
 import { registerRoomHandlers } from './sockets/roomHandler.js';
+import { registerCommentHandlers } from './sockets/commentHandler.js';
 import executeRouter from './routes/executeRouter.js';
 import roomRouter from './routes/roomRouter.js';
+import lectureRouter from './routes/lectureRouter.js';
+import commentRouter from './routes/commentRouter.js';
 import Room from './models/Room.js';
 
 dotenv.config();
@@ -15,7 +18,7 @@ dotenv.config();
 // Connect to MongoDB & Clear Ghost Sessions
 await connectDB();
 try {
-  await Room.updateMany({}, { $set: { participants: [], currentDriverId: null } });
+  await Room.updateMany({}, { $set: { participants: [], currentDriverUsername: null } });
   console.log("Database cleanup: Removed ghost participants.");
 } catch (e) {
   console.error(e);
@@ -28,6 +31,8 @@ app.use(express.json());
 // Routes
 app.use('/api', executeRouter);
 app.use('/api', roomRouter);
+app.use('/api', lectureRouter);
+app.use('/api', commentRouter);
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -42,9 +47,10 @@ app.get('/api/health', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
-  
+
   // Register modular handlers
   registerRoomHandlers(io, socket);
+  registerCommentHandlers(io, socket);
 
   socket.on('disconnect', () => {
     console.log(`User disconnected: ${socket.id}`);
