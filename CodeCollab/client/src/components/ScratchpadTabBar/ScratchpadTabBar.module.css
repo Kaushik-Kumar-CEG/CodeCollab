@@ -1,0 +1,111 @@
+.tabBarContainer {
+  height: 35px;
+  background-color: var(--bg-elevated);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid var(--border-default);
+  overflow: hidden;
+}
+
+.tabsScrollArea {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.tabsScrollArea::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  min-width: 120px;
+  height: 35px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.tab:hover {
+  background-color: var(--bg-elevated);
+}
+
+.activeTab {
+  background-color: var(--editor-bg);
+  border-bottom: 1px solid transparent; /* Merges with editor below */
+  color: var(--text-primary);
+}
+
+.userDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--accent-purple);
+}
+
+.tabName {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tabName small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.closeBtn {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.tab:hover .closeBtn {
+  opacity: 1;
+  color: var(--text-secondary);
+}
+
+.closeBtn:hover {
+  color: var(--accent-error);
+}
+
+.emptyTab {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.tabActions {
+  padding: 0 12px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.actionBtn {
+  background: transparent;
+  color: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+}
+
+.actionBtn:hover {
+  background: var(--bg-surface);
+}

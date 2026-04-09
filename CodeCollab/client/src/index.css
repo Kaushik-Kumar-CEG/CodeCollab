@@ -1,0 +1,13 @@
+/* Reset — index.css is kept minimal. 
+   All theming lives in styles/variables.css and styles/global.css */
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+}
