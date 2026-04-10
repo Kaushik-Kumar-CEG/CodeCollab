@@ -32,11 +32,6 @@ export const Navbar = () => {
     return (
         <nav className={styles.navbarContainer}>
             <div className={styles.navLeft}>
-                <div className={styles.boxes}>
-                    <span className={styles.boxRed}></span>
-                    <span className={styles.boxYellow}></span>
-                    <span className={styles.boxGreen}></span>
-                </div>
                 <span className={styles.brand} onClick={() => navigate('/')}>CodeCollab</span>
             </div>
 

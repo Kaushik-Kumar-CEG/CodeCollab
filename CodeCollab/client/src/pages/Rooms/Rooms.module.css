@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     background-color: var(--bg-base);
+    font-family: var(--font-sans);
 }
 
 .usernameWarning {
@@ -13,7 +14,6 @@
     margin: var(--space-4) var(--space-6) 0;
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
-    font-family: var(--font-mono);
     text-align: center;
 }
 
@@ -28,258 +28,245 @@
 .grid {
     display: grid;
     grid-template-columns: 380px 1fr;
-    gap: var(--space-6);
+    gap: var(--space-8);
     align-items: start;
 }
 
-/* ── Left Column ── */
 .leftCol {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-6);
 }
 
-.card {
-    background-color: var(--bg-surface);
+/* ── Terminal Window Wrapper ── */
+.terminal {
+    background-color: #0d1117;
+    border-radius: 8px;
     border: 1px solid var(--border-muted);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
-    transition: border-color var(--transition-fast);
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    text-align: left;
 }
 
-.card:hover {
-    border-color: var(--accent-primary);
-}
-
-.cardHeader {
+.terminalHeader {
+    background-color: #161b22;
+    padding: 10px 16px;
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    margin-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border-muted);
+    position: relative;
 }
 
-.cardIcon {
-    font-size: 1.5rem;
+.dots {
+    display: flex;
+    gap: 8px;
 }
 
-.cardHeader h2 {
+.dots span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dotRed { background-color: #ff5f56; }
+.dotYellow { background-color: #ffbd2e; }
+.dotGreen { background-color: #27c93f; }
+
+.terminalTitle {
+    color: var(--text-secondary);
+    font-size: 13px;
     font-family: var(--font-mono);
-    font-size: var(--text-lg);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.terminalBody {
+    padding: 24px;
+    font-size: 14px;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ── UX Typography & Elements ── */
+.sectionTitle {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
     margin: 0;
 }
 
-.cardDesc {
+.terminalText {
     color: var(--text-secondary);
-    font-size: var(--text-sm);
-    margin-bottom: var(--space-4);
     line-height: 1.5;
+    font-size: 14px;
+    margin: 0;
 }
 
-.btnCreate {
+.inputLine {
     width: 100%;
-    padding: var(--space-3) var(--space-5);
+    background: var(--bg-base);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.inputLine:focus {
+    border-color: var(--accent-primary);
+}
+
+.inputLine::placeholder {
+    color: var(--text-muted);
+}
+
+.btnAction {
+    width: 100%;
     background: var(--accent-primary);
     color: #fff;
     border: none;
-    border-radius: var(--radius-md);
-    font-family: var(--font-mono);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-family: var(--font-sans);
     font-weight: 600;
-    font-size: var(--text-sm);
+    font-size: 14px;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    text-align: center;
+    transition: filter var(--transition-fast);
 }
 
-.btnCreate:hover {
-    filter: brightness(1.15);
-    box-shadow: var(--shadow-glow);
+.btnAction:hover {
+    filter: brightness(1.1);
 }
 
-.btnCreate:disabled {
+.btnAction:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
+/* ── Join Row inline ── */
 .joinRow {
     display: flex;
-    gap: var(--space-2);
+    gap: 8px;
+    width: 100%;
 }
 
-.input {
+.joinInputContainer {
     flex: 1;
-    padding: var(--space-2) var(--space-3);
-    background-color: var(--bg-base);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    outline: none;
-    transition: border-color var(--transition-fast);
 }
 
-.input:focus {
-    border-color: var(--accent-primary);
-}
-
-.input::placeholder {
-    color: var(--text-muted);
-}
-
-.btnJoin {
-    padding: var(--space-2) var(--space-4);
+.btnJoinInline {
     background: transparent;
     color: var(--text-primary);
     border: 1px solid var(--border-default);
-    border-radius: var(--radius-md);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
+    padding: 0 16px;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
-    transition: all var(--transition-fast);
+    transition: background var(--transition-fast);
     white-space: nowrap;
 }
 
-.btnJoin:hover {
+.btnJoinInline:hover {
     background: var(--bg-elevated);
-    border-color: var(--text-secondary);
 }
 
-.roomNameInput {
-    width: 100%;
-    padding: var(--space-3);
-    background-color: var(--bg-base);
-    border: 1px solid var(--border-default);
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    outline: none;
-    margin-bottom: var(--space-3);
-    transition: border-color var(--transition-fast);
-}
-
-.roomNameInput:focus {
-    border-color: var(--accent-primary);
-}
-
-.roomActions {
+/* ── Room List Terminal ── */
+.terminalList {
     display: flex;
-    gap: var(--space-2);
-}
-
-.btnDeleteRoom {
-    background: transparent;
-    color: #ff5f56;
-    border: 1px solid rgba(255, 95, 86, 0.4);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    padding: 4px 12px;
-    cursor: pointer;
-    font-family: var(--font-mono);
-    transition: all var(--transition-fast);
-}
-
-.btnDeleteRoom:hover {
-    background: rgba(255, 95, 86, 0.15);
-    border-color: #ff5f56;
-}
-
-/* ── Existing Rooms ── */
-.existingRooms {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-muted);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-}
-
-.existingHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--space-4) var(--space-5);
-    border-bottom: 1px solid var(--border-muted);
-}
-
-.existingHeader h2 {
-    font-family: var(--font-mono);
-    font-size: var(--text-lg);
-    margin: 0;
-}
-
-.roomCount {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-}
-
-.roomList {
+    flex-direction: column;
+    gap: 12px;
     max-height: 500px;
     overflow-y: auto;
 }
 
-.roomItem {
+.roomRow {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: var(--space-4) var(--space-5);
-    border-bottom: 1px solid var(--border-muted);
-    cursor: pointer;
-    transition: background var(--transition-fast);
+    align-items: center;
+    padding: 16px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    transition: border-color var(--transition-fast);
 }
 
-.roomItem:last-child {
-    border-bottom: none;
-}
-
-.roomItem:hover {
-    background: var(--bg-elevated);
+.roomRow:hover {
+    border-color: var(--text-muted);
 }
 
 .roomInfo {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
-.roomTitle {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
+.roomName {
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 15px;
 }
 
 .roomMeta {
-    font-size: 11px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
+    font-size: 12px;
     font-family: var(--font-mono);
 }
 
-.roomJoinBtn {
+.roomActions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btnJoinList {
     background: transparent;
-    color: var(--accent-primary);
-    border: 1px solid var(--accent-primary);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    padding: 4px 12px;
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 13px;
     cursor: pointer;
-    font-family: var(--font-mono);
     transition: all var(--transition-fast);
 }
 
-.roomJoinBtn:hover {
-    background: var(--accent-primary);
-    color: #fff;
+.btnJoinList:hover {
+    border-color: var(--text-secondary);
+    background: var(--bg-elevated);
+}
+
+.btnDeleteList {
+    background: transparent;
+    color: #ff5f56;
+    border: 1px solid rgba(255, 95, 86, 0.3);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btnDeleteList:hover {
+    background: rgba(255, 95, 86, 0.1);
+    border-color: #ff5f56;
 }
 
 .emptyState {
-    padding: var(--space-10);
-    text-align: center;
     color: var(--text-muted);
-    font-size: var(--text-sm);
-}
-
-.emptyHint {
-    color: var(--text-secondary);
-    margin-top: var(--space-2);
+    text-align: center;
+    padding: 40px;
 }
 
 @media (max-width: 768px) {

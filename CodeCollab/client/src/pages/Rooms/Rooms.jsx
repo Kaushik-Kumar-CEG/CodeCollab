@@ -20,7 +20,6 @@ export const Rooms = () => {
 
     const getUsername = () => sessionStorage.getItem('cc_username') || '';
 
-    // Fetch rooms filtered by this user's username
     const fetchRooms = () => {
         const username = getUsername();
         const url = username ? `${API_URL}/rooms?username=${encodeURIComponent(username)}` : `${API_URL}/rooms`;
@@ -98,97 +97,128 @@ export const Rooms = () => {
             <main className={styles.main}>
                 {!username && (
                     <motion.div className={styles.usernameWarning} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                        ⚠️ Set your username in the navbar before creating or joining rooms.
+                        Please set your username in the navbar before creating or joining rooms.
                     </motion.div>
                 )}
                 <div className={styles.grid}>
                     {/* Left Column */}
                     <div className={styles.leftCol}>
-                        <motion.div className={styles.card} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
-                            <div className={styles.cardHeader}>
-                                <span className={styles.cardIcon}>🚀</span>
-                                <h2>Create Room</h2>
+                        {/* Terminal: Create Room */}
+                        <motion.div className={styles.terminal} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
+                            <div className={styles.terminalHeader}>
+                                <div className={styles.dots}>
+                                    <span className={styles.dotRed}></span>
+                                    <span className={styles.dotYellow}></span>
+                                    <span className={styles.dotGreen}></span>
+                                </div>
+                                <span className={styles.terminalTitle}>create_room.sh</span>
                             </div>
-                            <p className={styles.cardDesc}>Start a new pair programming session. You'll be the driver.</p>
-                            <input 
-                                type="text"
-                                className={styles.roomNameInput}
-                                placeholder="Room Name (Optional)"
-                                value={roomName}
-                                onChange={(e) => setRoomName(e.target.value)}
-                            />
-                            <button className={styles.btnCreate} onClick={handleCreateRoom} disabled={isCreating}>
-                                {isCreating ? '⏳ Creating...' : '+ New Room'}
-                            </button>
+                            <div className={styles.terminalBody}>
+                                <h2 className={styles.sectionTitle}>Create New Room</h2>
+                                <p className={styles.terminalText}>Start a new pair programming session. You'll be the designated driver.</p>
+                                <input 
+                                    type="text"
+                                    className={styles.inputLine}
+                                    placeholder="Room Name (optional)"
+                                    value={roomName}
+                                    onChange={(e) => setRoomName(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleCreateRoom()}
+                                />
+                                <button className={styles.btnAction} onClick={handleCreateRoom} disabled={isCreating}>
+                                    {isCreating ? 'Creating Room...' : 'Create Room'}
+                                </button>
+                            </div>
                         </motion.div>
 
-                        <motion.div className={styles.card} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
-                            <div className={styles.cardHeader}>
-                                <span className={styles.cardIcon}>🔗</span>
-                                <h2>Join Room</h2>
+                        {/* Terminal: Join Room */}
+                        <motion.div className={styles.terminal} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+                            <div className={styles.terminalHeader}>
+                                <div className={styles.dots}>
+                                    <span className={styles.dotRed}></span>
+                                    <span className={styles.dotYellow}></span>
+                                    <span className={styles.dotGreen}></span>
+                                </div>
+                                <span className={styles.terminalTitle}>join_room.sh</span>
                             </div>
-                            <p className={styles.cardDesc}>Have a room ID? Paste it below to join.</p>
-                            <div className={styles.joinRow}>
-                                <input
-                                    className={styles.input}
-                                    type="text"
-                                    placeholder="Paste Room ID..."
-                                    value={joinId}
-                                    onChange={(e) => setJoinId(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleJoinRoom()}
-                                />
-                                <button className={styles.btnJoin} onClick={() => handleJoinRoom()}>Join →</button>
+                            <div className={styles.terminalBody}>
+                                <h2 className={styles.sectionTitle}>Join Existing Room</h2>
+                                <p className={styles.terminalText}>Have an invite code or room ID? Request access below.</p>
+                                <div className={styles.joinRow}>
+                                    <div className={styles.joinInputContainer}>
+                                        <input
+                                            className={styles.inputLine}
+                                            type="text"
+                                            placeholder="Paste Room ID"
+                                            value={joinId}
+                                            onChange={(e) => setJoinId(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleJoinRoom()}
+                                        />
+                                    </div>
+                                    <button className={styles.btnJoinInline} onClick={() => handleJoinRoom()}>
+                                        Join Room
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
 
                     {/* Right Column: Your Rooms */}
-                    <motion.div className={styles.existingRooms} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
-                        <div className={styles.existingHeader}>
-                            <h2>{username ? 'Your Rooms' : 'All Rooms'}</h2>
-                            <span className={styles.roomCount}>{rooms.length} room{rooms.length !== 1 ? 's' : ''}</span>
+                    <motion.div className={styles.terminal} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.2 }}>
+                        <div className={styles.terminalHeader}>
+                            <div className={styles.dots}>
+                                <span className={styles.dotRed}></span>
+                                <span className={styles.dotYellow}></span>
+                                <span className={styles.dotGreen}></span>
+                            </div>
+                            <span className={styles.terminalTitle}>list_rooms.sh</span>
                         </div>
+                        <div className={styles.terminalBody}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h2 className={styles.sectionTitle}>Open Sessions</h2>
+                                <span className={styles.terminalText} style={{ fontSize: '13px' }}>
+                                    {rooms.length} Session{rooms.length !== 1 && 's'}
+                                </span>
+                            </div>
 
-                        {loading ? (
-                            <div className={styles.emptyState}>Loading rooms...</div>
-                        ) : rooms.length === 0 ? (
-                            <div className={styles.emptyState}>
-                                <p>{username ? 'You haven\'t created or joined any rooms yet.' : 'No active rooms.'}</p>
-                                <p className={styles.emptyHint}>Create one to get started!</p>
-                            </div>
-                        ) : (
-                            <div className={styles.roomList}>
-                                {rooms.map((room, index) => (
-                                    <motion.div
-                                        key={room.roomId}
-                                        className={styles.roomItem}
-                                        initial={{ opacity: 0, x: 10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ duration: 0.25, delay: index * 0.05 }}
-                                        onClick={() => handleJoinRoom(room.roomId)}
-                                    >
-                                        <div className={styles.roomInfo}>
-                                            <span className={styles.roomTitle}>{room.title}</span>
-                                            <span className={styles.roomMeta}>
-                                                {room.roomId} • {room.language} • {room.participantCount} user{room.participantCount !== 1 ? 's' : ''}
-                                                {room.createdBy === username && ' • Created by you'}
-                                            </span>
-                                        </div>
-                                        <div className={styles.roomActions}>
-                                            <button className={styles.roomJoinBtn}>Join →</button>
-                                            {room.createdBy === username && username && (
-                                                <button 
-                                                    className={styles.btnDeleteRoom} 
-                                                    onClick={(e) => handleDeleteRoom(room.roomId, e)}
-                                                >
-                                                    Delete
+                            {loading ? (
+                                <div className={styles.emptyState}>Loading accessible rooms...</div>
+                            ) : rooms.length === 0 ? (
+                                <div className={styles.emptyState}>No open sessions found nearby.</div>
+                            ) : (
+                                <div className={styles.terminalList}>
+                                    {rooms.map((room, index) => (
+                                        <motion.div
+                                            key={room.roomId}
+                                            className={styles.roomRow}
+                                            initial={{ opacity: 0, Math: 10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{ duration: 0.25, delay: index * 0.05 }}
+                                        >
+                                            <div className={styles.roomInfo}>
+                                                <span className={styles.roomName}>{room.title}</span>
+                                                <span className={styles.roomMeta}>
+                                                    ID: {room.roomId} | Lang: {room.language} | Participants: {room.participantCount}
+                                                    {room.createdBy === username && ' | Owner'}
+                                                </span>
+                                            </div>
+                                            <div className={styles.roomActions}>
+                                                <button className={styles.btnJoinList} onClick={() => handleJoinRoom(room.roomId)}>
+                                                    Join
                                                 </button>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        )}
+                                                {room.createdBy === username && username && (
+                                                    <button 
+                                                        className={styles.btnDeleteList} 
+                                                        onClick={(e) => handleDeleteRoom(room.roomId, e)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </motion.div>
                 </div>
             </main>

@@ -63,84 +63,97 @@ export const Learning = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
                 >
-                    <div className={styles.headerText}>
-                        <h1 className={styles.pageTitle}>Learning Mode</h1>
-                        <p className={styles.pageDesc}>
-                            Interactive video lectures with time-synced code. Select a lecture to begin.
-                        </p>
-                    </div>
+                    <h1 className={styles.pageTitle}>Learning Directory</h1>
+                    <p className={styles.pageDesc}>
+                        Interactive video lectures paired with time-synced code.
+                    </p>
                 </motion.div>
 
-                <div className={styles.filterBar}>
-                    <div className={styles.tabs}>
-                        <button
-                            className={filter === 'all' ? styles.tabActive : styles.tab}
-                            onClick={() => setFilter('all')}
-                        >
-                            All Lectures
-                        </button>
-                        {isLoggedIn && (
-                            <button
-                                className={filter === 'mine' ? styles.tabActive : styles.tab}
-                                onClick={() => setFilter('mine')}
-                            >
-                                My Lectures
-                            </button>
-                        )}
+                <motion.div className={styles.terminal} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+                    <div className={styles.terminalHeader}>
+                        <div className={styles.dots}>
+                            <span className={styles.dotRed}></span>
+                            <span className={styles.dotYellow}></span>
+                            <span className={styles.dotGreen}></span>
+                        </div>
+                        <span className={styles.terminalTitle}>learning_modules.sh</span>
                     </div>
 
-                    <button
-                        className={styles.btnAddLecture}
-                        onClick={() => navigate('/learning/create')}
-                    >
-                        + Add Lecture
-                    </button>
-                </div>
-
-                <div className={styles.lectureGrid}>
-                    {/* Dynamic Lectures from API */}
-                    {displayedLectures.map((lecture, index) => (
-                        <motion.div
-                            key={lecture.lectureId}
-                            className={styles.lectureCard}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3, delay: (index + 1) * 0.05 }}
-                            onClick={() => navigate(`/lecture/${lecture.lectureId}`)}
-                        >
-                            <div className={styles.cardIcon}>📚</div>
-                            <h3>{lecture.title}</h3>
-                            {lecture.description && (
-                                <p className={styles.cardDesc}>{lecture.description}</p>
-                            )}
-                            <div className={styles.cardFooter}>
-                                <div className={styles.cardMeta}>
-                                    <span className={styles.langTag}>{lecture.language}</span>
-                                    <span className={styles.instructor}>by {lecture.instructorName}</span>
-                                </div>
-                                {isLoggedIn && lecture.instructorName === username && (
+                    <div className={styles.terminalBody}>
+                        
+                        <div className={styles.filterBar}>
+                            <div className={styles.tabs}>
+                                <button
+                                    className={filter === 'all' ? styles.tabActive : styles.tab}
+                                    onClick={() => setFilter('all')}
+                                >
+                                    All Lectures
+                                </button>
+                                {isLoggedIn && (
                                     <button
-                                        className={styles.btnDelete}
-                                        onClick={(e) => handleDelete(e, lecture.lectureId)}
+                                        className={filter === 'mine' ? styles.tabActive : styles.tab}
+                                        onClick={() => setFilter('mine')}
                                     >
-                                        🗑️ Delete
+                                        My Lectures
                                     </button>
                                 )}
                             </div>
-                        </motion.div>
-                    ))}
-                </div>
 
-                {loading && (
-                    <div className={styles.emptyState}>Loading lectures...</div>
-                )}
+                            <button
+                                className={styles.btnAddLecture}
+                                onClick={() => navigate('/learning/create')}
+                            >
+                                Add New Lecture
+                            </button>
+                        </div>
 
-                {!loading && displayedLectures.length === 0 && (
-                    <div className={styles.emptyState}>
-                        <p>No lectures found.</p>
-                        {filter === 'mine' && <p className={styles.emptyHint}>You haven't created any interactive lectures yet.</p>}
+                        {loading ? (
+                            <div className={styles.emptyState}>Loading lectures mapping...</div>
+                        ) : displayedLectures.length === 0 ? (
+                            <div className={styles.emptyState}>
+                                <p>No lectures available matching the current filter.</p>
+                                {filter === 'mine' && <p className={styles.emptyHint}>Upload a new interactive lecture to get started.</p>}
+                            </div>
+                        ) : (
+                            <div className={styles.lectureList}>
+                                {displayedLectures.map((lecture, index) => (
+                                    <motion.div
+                                        key={lecture.lectureId}
+                                        className={styles.lectureRow}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.2, delay: index * 0.05 }}
+                                        onClick={() => navigate(`/lecture/${lecture.lectureId}`)}
+                                    >
+                                        <div className={styles.lectureInfo}>
+                                            <span className={styles.lectureTitle}>
+                                                {lecture.title}
+                                                <span className={styles.langBadge}>{lecture.language}</span>
+                                            </span>
+                                            {lecture.description && (
+                                                <span className={styles.lectureDesc}>{lecture.description}</span>
+                                            )}
+                                            <span className={styles.lectureMeta}>
+                                                Owner: {lecture.instructorName} | Lecture ID: {lecture.lectureId.substring(0,8)}
+                                            </span>
+                                        </div>
+                                        <div className={styles.lectureActions}>
+                                            <button className={styles.btnPlay}>Watch</button>
+                                            {isLoggedIn && lecture.instructorName === username && (
+                                                <button
+                                                    className={styles.btnDelete}
+                                                    onClick={(e) => handleDelete(e, lecture.lectureId)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                )}
+                </motion.div>
             </main>
         </div>
     );
