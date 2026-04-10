@@ -36,7 +36,8 @@ const initialState = {
     username: sessionStorage.getItem('cc_username') || null,
     isLoggedIn: !!sessionStorage.getItem('cc_username'),
     loading: false,
-    error: null
+    error: null,
+    isAuthModalOpen: false
 };
 
 const authSlice = createSlice({
@@ -51,6 +52,15 @@ const authSlice = createSlice({
         },
         clearAuthError: (state) => {
             state.error = null;
+        },
+        openAuthModal: (state) => {
+            state.isAuthModalOpen = true;
+        },
+        closeAuthModal: (state) => {
+            state.isAuthModalOpen = false;
+        },
+        toggleAuthModal: (state) => {
+            state.isAuthModalOpen = !state.isAuthModalOpen;
         }
     },
     extraReducers: (builder) => {
@@ -82,5 +92,5 @@ const authSlice = createSlice({
     }
 });
 
-export const { logout, clearAuthError } = authSlice.actions;
+export const { logout, clearAuthError, openAuthModal, closeAuthModal, toggleAuthModal } = authSlice.actions;
 export default authSlice.reducer;

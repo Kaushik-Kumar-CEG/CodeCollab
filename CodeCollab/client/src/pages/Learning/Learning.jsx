@@ -98,28 +98,6 @@ export const Learning = () => {
                 </div>
 
                 <div className={styles.lectureGrid}>
-                    {/* Demo Lecture — always available if filter is 'all' */}
-                    {filter === 'all' && (
-                        <motion.div
-                            className={styles.lectureCard}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                            onClick={() => navigate('/lecture/demo')}
-                        >
-                            <div className={styles.cardBadge}>DEMO</div>
-                            <div className={styles.cardIcon}>🎬</div>
-                            <h3>Python 101: Understanding Recursion</h3>
-                            <p className={styles.cardDesc}>
-                                Learn how recursion works with step-by-step code progression synced to video.
-                            </p>
-                            <div className={styles.cardFooter}>
-                                <span className={styles.langTag}>python</span>
-                                <span className={styles.instructor}>by Instructor</span>
-                            </div>
-                        </motion.div>
-                    )}
-
                     {/* Dynamic Lectures from API */}
                     {displayedLectures.map((lecture, index) => (
                         <motion.div
@@ -160,7 +138,6 @@ export const Learning = () => {
                 {!loading && displayedLectures.length === 0 && (
                     <div className={styles.emptyState}>
                         <p>No lectures found.</p>
-                        {filter === 'all' && <p className={styles.emptyHint}>The demo lecture above is always accessible.</p>}
                         {filter === 'mine' && <p className={styles.emptyHint}>You haven't created any interactive lectures yet.</p>}
                     </div>
                 )}

@@ -1,12 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { DUMMY_LECTURE } from '../utils/dummyLectureData';
-
 const API_URL = 'http://localhost:5001/api';
 
 export const fetchLecture = createAsyncThunk('lecture/fetchLecture', async (lectureId, { rejectWithValue }) => {
-  if (lectureId === 'demo') {
-    return DUMMY_LECTURE;
-  }
   try {
     const res = await fetch(`${API_URL}/lectures/${lectureId}`);
     const data = await res.json();

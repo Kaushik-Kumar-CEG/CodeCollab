@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { addLog } from '../../store/activityLogSlice';
+import { openAuthModal } from '../../store/authSlice';
 import styles from './Rooms.module.css';
 
 const API_URL = 'http://localhost:5001/api';
@@ -13,6 +14,7 @@ export const Rooms = () => {
     const dispatch = useDispatch();
     const [rooms, setRooms] = useState([]);
     const [joinId, setJoinId] = useState('');
+    const [roomName, setRoomName] = useState('');
     const [isCreating, setIsCreating] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -38,15 +40,16 @@ export const Rooms = () => {
     const handleCreateRoom = async () => {
         const name = getUsername();
         if (!name) {
-            alert('Please set your username in the navbar first!');
+            dispatch(openAuthModal());
             return;
         }
         setIsCreating(true);
+        const finalTitle = roomName.trim() || `${name}'s Room`;
         try {
             const res = await fetch(`${API_URL}/rooms`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ roomType: 'pair', title: `${name}'s Room`, username: name }),
+                body: JSON.stringify({ roomType: 'pair', title: finalTitle, username: name }),
             });
             const data = await res.json();
             if (data.roomId) {
@@ -63,13 +66,27 @@ export const Rooms = () => {
     const handleJoinRoom = (roomId) => {
         const name = getUsername();
         if (!name) {
-            alert('Please set your username in the navbar first!');
+            dispatch(openAuthModal());
             return;
         }
         const id = roomId || joinId.trim();
         if (!id) return;
         dispatch(addLog({ text: `${name} joining room ${id}`, type: 'log' }));
         navigate(`/room/${id}`, { state: { username: name } });
+    };
+
+    const handleDeleteRoom = async (roomId, e) => {
+        e.stopPropagation();
+        if (!window.confirm("Are you sure you want to delete this room?")) return;
+        try {
+            const res = await fetch(`${API_URL}/rooms/${roomId}`, { method: 'DELETE' });
+            if (res.ok) {
+                dispatch(addLog({ text: 'Room deleted successfully', type: 'success' }));
+                fetchRooms();
+            }
+        } catch (err) {
+            console.error('Failed to delete room:', err);
+        }
     };
 
     const username = getUsername();
@@ -92,7 +109,14 @@ export const Rooms = () => {
                                 <h2>Create Room</h2>
                             </div>
                             <p className={styles.cardDesc}>Start a new pair programming session. You'll be the driver.</p>
-                            <button className={styles.btnCreate} onClick={handleCreateRoom} disabled={isCreating || !username}>
+                            <input 
+                                type="text"
+                                className={styles.roomNameInput}
+                                placeholder="Room Name (Optional)"
+                                value={roomName}
+                                onChange={(e) => setRoomName(e.target.value)}
+                            />
+                            <button className={styles.btnCreate} onClick={handleCreateRoom} disabled={isCreating}>
                                 {isCreating ? '⏳ Creating...' : '+ New Room'}
                             </button>
                         </motion.div>
@@ -112,7 +136,7 @@ export const Rooms = () => {
                                     onChange={(e) => setJoinId(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleJoinRoom()}
                                 />
-                                <button className={styles.btnJoin} onClick={() => handleJoinRoom()} disabled={!username}>Join →</button>
+                                <button className={styles.btnJoin} onClick={() => handleJoinRoom()}>Join →</button>
                             </div>
                         </motion.div>
                     </div>
@@ -149,7 +173,17 @@ export const Rooms = () => {
                                                 {room.createdBy === username && ' • Created by you'}
                                             </span>
                                         </div>
-                                        <button className={styles.roomJoinBtn}>Join →</button>
+                                        <div className={styles.roomActions}>
+                                            <button className={styles.roomJoinBtn}>Join →</button>
+                                            {room.createdBy === username && username && (
+                                                <button 
+                                                    className={styles.btnDeleteRoom} 
+                                                    onClick={(e) => handleDeleteRoom(room.roomId, e)}
+                                                >
+                                                    Delete
+                                                </button>
+                                            )}
+                                        </div>
                                     </motion.div>
                                 ))}
                             </div>
