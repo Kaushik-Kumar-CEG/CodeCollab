@@ -27,7 +27,7 @@ export const Room = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const socketRef = useRef(null);
+  const [socket, setSocket] = React.useState(null);
 
   // Username: prefer location state, then sessionStorage, then random
   const [username] = React.useState(() => {
@@ -58,52 +58,52 @@ export const Room = () => {
   };
 
   useEffect(() => {
-    socketRef.current = io(SOCKET_SERVER_URL);
+    const newSocket = io(SOCKET_SERVER_URL);
+    setSocket(newSocket);
 
-    socketRef.current.on('connect', () => {
-      socketRef.current.emit('room:join', { roomId, username });
+    newSocket.on('connect', () => {
+      newSocket.emit('room:join', { roomId, username });
       dispatch(addLog({ text: `${username} connected to room ${roomId}`, type: 'log' }));
     });
 
-    socketRef.current.on('room:state', (state) => {
+    newSocket.on('room:state', (state) => {
       dispatch(setRoomState(state));
-      // Find my role by username
       const me = state.participants.find(p => p.username === username);
       if (me) {
         dispatch(setRoomContext({ roomId, role: me.role }));
       }
     });
 
-    socketRef.current.on('code:sync', ({ delta }) => {
+    newSocket.on('code:sync', ({ delta }) => {
       dispatch(updateMainCode(delta));
     });
 
-    socketRef.current.on('scratchpad:sync', ({ username: scratchUser, delta }) => {
+    newSocket.on('scratchpad:sync', ({ username: scratchUser, delta }) => {
       dispatch(updateScratchpadCode({ username: scratchUser, delta }));
     });
 
-    socketRef.current.on('ghost:receive', (proposal) => {
+    newSocket.on('ghost:receive', (proposal) => {
       dispatch(receiveProposal(proposal));
     });
 
-    socketRef.current.on('role:request-incoming', ({ requesterUsername }) => {
+    newSocket.on('role:request-incoming', ({ requesterUsername }) => {
       setRoleRequest({ requesterUsername });
     });
 
-    socketRef.current.on('ghost:rejected', () => {
+    newSocket.on('ghost:rejected', () => {
       showToast('Your merge proposal was rejected.', 'error');
     });
 
-    socketRef.current.on('ghost:accepted', () => {
+    newSocket.on('ghost:accepted', () => {
       showToast('Your merge proposal was accepted!', 'success');
     });
 
-    socketRef.current.on('error', ({ message }) => {
+    newSocket.on('error', ({ message }) => {
       showToast(message, 'error');
     });
 
     return () => {
-      socketRef.current.disconnect();
+      newSocket.disconnect();
     };
   }, [roomId, username, dispatch]);
 
@@ -116,15 +116,15 @@ export const Room = () => {
   };
 
   const handleRequestControl = () => {
-    if (socketRef.current) {
-      socketRef.current.emit('role:request', { roomId });
+    if (socket) {
+      socket.emit('role:request', { roomId });
       showToast('Control request sent to driver.', 'info');
     }
   };
 
   const handleApproveSwap = () => {
-    if (socketRef.current && roleRequest) {
-      socketRef.current.emit('role:approve', { roomId, newDriverUsername: roleRequest.requesterUsername });
+    if (socket && roleRequest) {
+      socket.emit('role:approve', { roomId, newDriverUsername: roleRequest.requesterUsername });
       setRoleRequest(null);
     }
   };
@@ -227,7 +227,7 @@ export const Room = () => {
           </div>
           <div className={styles.editorWrapper}>
             <EditorComponent
-              socket={socketRef.current}
+              socket={socket}
               roomId={roomId}
               isDriver={isDriver}
               isScratchpad={false}
@@ -235,7 +235,7 @@ export const Room = () => {
               onSelectionChange={(range) => setSelectionRange(range)}
             />
             <CommentPanel
-              socket={socketRef.current}
+              socket={socket}
               roomId={roomId}
               username={username}
               isOpen={commentOpen}
@@ -250,12 +250,12 @@ export const Room = () => {
             <ScratchpadTabBar
               participants={participants}
               username={username}
-              socket={socketRef.current}
+              socket={socket}
               roomId={roomId}
             />
             <div className={styles.editorWrapper}>
               <EditorComponent
-                socket={socketRef.current}
+                socket={socket}
                 roomId={roomId}
                 isDriver={activeScratchpadUser === username}
                 isScratchpad={true}
@@ -279,7 +279,7 @@ export const Room = () => {
         <span>{participants.length} online • {language}</span>
       </footer>
 
-      {isDriver && <GhostMergeModal socket={socketRef.current} roomId={roomId} />}
+      {isDriver && socket && <GhostMergeModal socket={socket} roomId={roomId} />}
     </div>
   );
 };

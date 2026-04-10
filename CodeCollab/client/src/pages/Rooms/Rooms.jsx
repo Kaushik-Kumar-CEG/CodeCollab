@@ -35,6 +35,7 @@ export const Rooms = () => {
 
     useEffect(() => {
         fetchRooms();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleCreateRoom = async () => {
@@ -57,7 +58,7 @@ export const Rooms = () => {
                 navigate(`/room/${data.roomId}`, { state: { username: name } });
             }
         } catch (err) {
-            console.error('Failed to create room:', err);
+            console.error('Failed to create room:', err.message || err);
         } finally {
             setIsCreating(false);
         }
@@ -85,7 +86,7 @@ export const Rooms = () => {
                 fetchRooms();
             }
         } catch (err) {
-            console.error('Failed to delete room:', err);
+            console.error('Failed to delete room:', err.message || err);
         }
     };
 
