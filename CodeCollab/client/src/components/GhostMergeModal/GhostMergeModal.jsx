@@ -8,6 +8,7 @@ import styles from './GhostMergeModal.module.css';
 const GhostMergeModal = ({ socket, roomId }) => {
   const dispatch = useDispatch();
   const { pendingProposals, mainCode } = useSelector(state => state.room);
+  const selectedLanguage = useSelector(state => state.execution.language);
 
   if (!pendingProposals || pendingProposals.length === 0) return null;
 
@@ -57,6 +58,7 @@ const GhostMergeModal = ({ socket, roomId }) => {
             <DiffEditor
               height="100%"
               theme="vs-dark"
+              language={selectedLanguage === 'c' || selectedLanguage === 'cpp' ? 'cpp' : selectedLanguage}
               original={mainCode}
               modified={currentProposal.codeDiff}
               options={{

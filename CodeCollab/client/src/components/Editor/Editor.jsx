@@ -43,7 +43,7 @@ const EditorComponent = ({ socket, roomId, isDriver, isScratchpad, overrideCode,
     }
 
     if (isScratchpad) {
-      dispatch(updateScratchpadCode({ userId: targetSocketId, delta: value }));
+      dispatch(updateScratchpadCode({ username: targetSocketId, delta: value }));
       if (socket) socket.emit('scratchpad:delta', { roomId, delta: value });
     } else {
       dispatch(updateMainCode(value));
