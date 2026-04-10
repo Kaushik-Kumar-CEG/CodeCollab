@@ -7,10 +7,10 @@ const router = express.Router();
 // POST /api/lectures — Create a new lecture
 router.post('/lectures', async (req, res) => {
     try {
-        const { title, description, videoUrl, language, timeline, instructorName } = req.body;
+        const { title, description, author, language, codeTimeline, videoUrl } = req.body;
 
-        if (!title || !videoUrl) {
-            return res.status(400).json({ error: 'Title and videoUrl are required' });
+        if (!title) {
+            return res.status(400).json({ error: 'Title is required' });
         }
 
         const lectureId = uuidv4().slice(0, 8);
@@ -19,10 +19,10 @@ router.post('/lectures', async (req, res) => {
             lectureId,
             title,
             description: description || '',
-            videoUrl,
+            videoUrl: videoUrl || '',
             language: language || 'javascript',
-            timeline: timeline || [],
-            instructorName: instructorName || 'Instructor'
+            timeline: codeTimeline || [],
+            instructorName: author || 'Instructor'
         });
 
         await lecture.save();
@@ -59,6 +59,19 @@ router.get('/lectures/:lectureId', async (req, res) => {
             return res.status(404).json({ error: 'Lecture not found' });
         }
         res.status(200).json(lecture);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE /api/lectures/:lectureId — Delete lecture
+router.delete('/lectures/:lectureId', async (req, res) => {
+    try {
+        const deletedLecture = await Lecture.findOneAndDelete({ lectureId: req.params.lectureId });
+        if (!deletedLecture) {
+            return res.status(404).json({ error: 'Lecture not found' });
+        }
+        res.status(200).json({ message: 'Lecture deleted successfully' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

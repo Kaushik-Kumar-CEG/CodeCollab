@@ -13,18 +13,98 @@
     padding: var(--space-10) var(--space-6);
 }
 
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-8);
+}
+
+.headerText {
+    display: flex;
+    flex-direction: column;
+}
+
 .pageTitle {
     font-family: var(--font-mono);
     font-size: var(--text-2xl);
     font-weight: 600;
     margin-bottom: var(--space-3);
+    margin-top: 0;
 }
 
 .pageDesc {
     color: var(--text-secondary);
     font-size: var(--text-base);
-    margin-bottom: var(--space-8);
     line-height: 1.5;
+    margin: 0;
+}
+
+.filterBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-6);
+    border-bottom: 1px solid var(--border-default);
+    padding-bottom: var(--space-3);
+}
+
+.tabs {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.tab,
+.tabActive {
+    background: none;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: var(--text-md);
+    font-weight: 600;
+    cursor: pointer;
+    padding: var(--space-2) 0;
+    position: relative;
+}
+
+.tab {
+    color: var(--text-muted);
+}
+
+.tab:hover {
+    color: var(--text-primary);
+}
+
+.tabActive {
+    color: var(--accent-primary);
+}
+
+.tabActive::after {
+    content: '';
+    position: absolute;
+    bottom: -13px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-primary);
+    border-radius: 2px;
+}
+
+.btnAddLecture {
+    background: var(--accent-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.btnAddLecture:hover {
+    filter: brightness(1.15);
 }
 
 .lectureGrid {
@@ -107,6 +187,29 @@
     font-size: 11px;
     color: var(--text-muted);
     font-family: var(--font-mono);
+}
+
+.cardMeta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.btnDelete {
+    background: transparent;
+    color: var(--accent-error);
+    border: 1px solid var(--accent-error);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btnDelete:hover {
+    background: var(--accent-error);
+    color: var(--bg-surface);
 }
 
 .emptyState {

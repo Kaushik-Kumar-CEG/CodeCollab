@@ -4,7 +4,7 @@ const lectureSchema = new mongoose.Schema({
   lectureId: { type: String, required: true, unique: true, index: true },
   title: { type: String, required: true },
   description: { type: String, default: '' },
-  videoUrl: { type: String, required: true },
+  videoUrl: { type: String, default: '' },
   language: { type: String, default: 'javascript' },
 
   // Time-synced code timeline

@@ -237,8 +237,208 @@
   .splitView {
     flex-direction: column;
   }
+
   .videoSection {
     border-right: none;
     border-bottom: 1px solid var(--border-default);
   }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.noVideoFallback {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-4);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-lg);
+}
+
+.fallbackIcon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.fallbackText {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+}
+
+.playbackControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--bg-surface);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-default);
+}
+
+.playBtn {
+  background: var(--accent-primary);
+  color: #fff;
+  border: none;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.playBtn:hover {
+  filter: brightness(1.1);
+}
+
+.playbackTime {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.codeSectionMaximized {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100vh;
+  /* Make it full screenish */
+}
+
+/* Floating Player Base PIP (Picture In Picture) */
+.floatingPlayer {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-radius: var(--radius-full);
+  padding: var(--space-3) var(--space-6);
+  z-index: 50;
+  width: 600px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-4);
+  backdrop-filter: blur(10px);
+}
+
+.floatingHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--border-muted);
+  padding-right: var(--space-4);
+  min-width: 150px;
+}
+
+.floatingTitle {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.floatingAuthor {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.floatingControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.scrubber {
+  flex: 1;
+  cursor: pointer;
+  height: 4px;
+  background: var(--bg-highlight);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+}
+
+.splitArea {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
+.editorArea {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.consoleSidebar {
+  width: 350px;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+}
+
+.terminalActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.btnRunInline {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btnRunInline:hover:not(:disabled) {
+  background: var(--bg-elevated);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
 }

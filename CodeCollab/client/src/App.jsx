@@ -5,6 +5,7 @@ import { Lecture } from './pages/Lecture/Lecture';
 import { Dashboard } from './pages/Dashboard/Dashboard';
 import { Rooms } from './pages/Rooms/Rooms';
 import { Learning } from './pages/Learning/Learning';
+import { CreateLecture } from './pages/CreateLecture/CreateLecture';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/rooms" element={<Rooms />} />
         <Route path="/learning" element={<Learning />} />
+        <Route path="/learning/create" element={<CreateLecture />} />
         <Route path="/room/:roomId" element={<Room />} />
         <Route path="/lecture/:lectureId" element={<Lecture />} />
       </Routes>

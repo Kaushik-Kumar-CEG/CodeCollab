@@ -15,7 +15,7 @@ const roomSchema = new mongoose.Schema({
   // Current state
   mainCode: { type: String, default: '' },
 
-  // Participants — keyed by username (not socket ID)
+  // Active participants (online now)
   participants: [{
     username: { type: String, required: true },
     role: { type: String, enum: ['driver', 'navigator', 'viewer'] },
@@ -23,15 +23,11 @@ const roomSchema = new mongoose.Schema({
     scratchpadCode: { type: String, default: '' }
   }],
 
-  // Driver tracking — now by username
+  // Driver tracking — by username
   currentDriverUsername: { type: String, default: null },
 
   // Metadata
-  createdAt: { type: Date, default: Date.now },
-  expiresAt: { type: Date, default: () => Date.now() + 24 * 60 * 60 * 1000 }
+  createdAt: { type: Date, default: Date.now }
 });
-
-// Auto-delete rooms after expiresAt timestamp
-roomSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model('Room', roomSchema);

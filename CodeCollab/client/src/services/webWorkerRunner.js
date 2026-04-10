@@ -1,3 +1,12 @@
+let currentWorker = null;
+
+export const terminateWorker = () => {
+  if (currentWorker) {
+    currentWorker.terminate();
+    currentWorker = null;
+  }
+};
+
 export const runJavaScriptInWorker = (code, timeoutMs = 5000) => {
   return new Promise((resolve) => {
     // Generate a worker string that wraps the code in an IIFE and intercepts console logs
@@ -27,6 +36,7 @@ export const runJavaScriptInWorker = (code, timeoutMs = 5000) => {
 
     const blob = new Blob([workerScript], { type: 'application/javascript' });
     const worker = new Worker(URL.createObjectURL(blob));
+    currentWorker = worker;
 
     let timer = setTimeout(() => {
       worker.terminate();
@@ -38,9 +48,9 @@ export const runJavaScriptInWorker = (code, timeoutMs = 5000) => {
       const { type, output } = e.data;
       worker.terminate();
       if (type === 'error') {
-         resolve({ stdout: '', stderr: output, exitCode: 1 });
+        resolve({ stdout: '', stderr: output, exitCode: 1 });
       } else {
-         resolve({ stdout: output, stderr: '', exitCode: 0 });
+        resolve({ stdout: output, stderr: '', exitCode: 0 });
       }
     };
 

@@ -86,11 +86,15 @@
     border-bottom: 2px solid var(--accent-primary);
 }
 
-/* ── Username ── */
+/* ── User Profile & Auth ── */
 .navRight {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    position: relative;
+}
+
+.userProfile {
+    position: relative;
 }
 
 .usernameDisplay {
@@ -100,6 +104,15 @@
     color: var(--text-secondary);
     font-size: var(--text-sm);
     font-family: var(--font-mono);
+    cursor: pointer;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    transition: background var(--transition-fast);
+}
+
+.usernameDisplay:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
 }
 
 .userIcon {
@@ -115,62 +128,143 @@
     font-weight: 600;
 }
 
-.setUsernameBtn {
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--space-2);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-2);
+    min-width: 120px;
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
+}
+
+.dropdownBtn {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    padding: var(--space-2) var(--space-3);
+    color: var(--accent-error);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.dropdownBtn:hover {
+    background: var(--bg-base);
+}
+
+/* Auth Area */
+.authContainer {
+    position: relative;
+}
+
+.loginBtn {
     background: transparent;
     color: var(--accent-primary);
     border: 1px solid var(--accent-primary);
-    border-radius: var(--radius-sm);
-    font-size: 11px;
-    padding: 2px 10px;
-    cursor: pointer;
+    border-radius: var(--radius-md);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-sm);
     font-family: var(--font-mono);
+    cursor: pointer;
     transition: all var(--transition-fast);
 }
 
-.setUsernameBtn:hover {
+.loginBtn:hover {
     background: var(--accent-primary);
     color: #fff;
 }
 
-.usernameRow {
-    display: flex;
-    gap: var(--space-2);
-    align-items: center;
+.authDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: var(--space-2);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    min-width: 240px;
+    box-shadow: var(--shadow-lg);
+    z-index: 200;
 }
 
-.usernameInput {
+.authTabs {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-muted);
+    padding-bottom: var(--space-2);
+}
+
+.authTabs button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    padding-bottom: var(--space-1);
+}
+
+.authTabs button.activeTab {
+    color: var(--accent-primary);
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.authInput {
     background-color: var(--bg-base);
     border: 1px solid var(--border-default);
     border-radius: var(--radius-sm);
     color: var(--text-primary);
     font-family: var(--font-mono);
-    font-size: 12px;
-    padding: var(--space-1) var(--space-2);
+    font-size: 13px;
+    padding: var(--space-2);
     outline: none;
-    width: 140px;
 }
 
-.usernameInput:focus {
+.authInput:focus {
     border-color: var(--accent-primary);
 }
 
-.usernameInput::placeholder {
-    color: var(--text-muted);
-}
-
-.setBtn {
-    background: transparent;
-    color: var(--text-primary);
-    border: 1px solid var(--border-default);
+.authSubmit {
+    background: var(--accent-primary);
+    color: #fff;
+    border: none;
     border-radius: var(--radius-sm);
-    font-size: 11px;
-    padding: 2px 10px;
-    cursor: pointer;
+    padding: var(--space-2);
     font-family: var(--font-mono);
-    transition: all var(--transition-fast);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: var(--space-2);
 }
 
-.setBtn:hover {
-    background: var(--bg-elevated);
-    border-color: var(--text-secondary);
+.authSubmit:hover:not(:disabled) {
+    filter: brightness(1.15);
+}
+
+.authSubmit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.authError {
+    color: var(--accent-error);
+    font-size: 11px;
+    font-family: var(--font-mono);
+    text-align: center;
 }

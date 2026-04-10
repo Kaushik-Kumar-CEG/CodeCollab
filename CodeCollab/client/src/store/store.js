@@ -4,6 +4,7 @@ import executionReducer from './executionSlice';
 import lectureReducer from './lectureSlice';
 import commentReducer from './commentSlice';
 import activityLogReducer from './activityLogSlice';
+import authReducer from './authSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     execution: executionReducer,
     lecture: lectureReducer,
     comment: commentReducer,
-    activityLog: activityLogReducer
+    activityLog: activityLogReducer,
+    auth: authReducer
   }
 });

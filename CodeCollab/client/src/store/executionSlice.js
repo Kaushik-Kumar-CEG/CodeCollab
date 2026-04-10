@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { runJavaScriptInWorker } from '../services/webWorkerRunner';
+import { runJavaScriptInWorker, terminateWorker } from '../services/webWorkerRunner';
 
 const PISTON_PROXY_URL = 'http://localhost:5001/api/execute';
 
@@ -22,6 +22,17 @@ export const executeCodeThunk = createAsyncThunk(
       }
       return await response.json(); // { stdout, stderr, exitCode }
     }
+  }
+);
+
+export const terminateExecutionThunk = createAsyncThunk(
+  'execution/terminate',
+  async (_, { getState }) => {
+    const { language } = getState().execution;
+    if (language === 'javascript') {
+      terminateWorker();
+    }
+    return true;
   }
 );
 
@@ -62,6 +73,11 @@ const executionSlice = createSlice({
       .addCase(executeCodeThunk.rejected, (state, action) => {
         state.isExecuting = false;
         state.stderr = action.error.message;
+        state.exitCode = 1;
+      })
+      .addCase(terminateExecutionThunk.fulfilled, (state) => {
+        state.isExecuting = false;
+        state.stderr = 'Execution terminated by user.';
         state.exitCode = 1;
       });
   }

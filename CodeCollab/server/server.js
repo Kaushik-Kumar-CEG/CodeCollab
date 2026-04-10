@@ -11,18 +11,12 @@ import executeRouter from './routes/executeRouter.js';
 import roomRouter from './routes/roomRouter.js';
 import lectureRouter from './routes/lectureRouter.js';
 import commentRouter from './routes/commentRouter.js';
-import Room from './models/Room.js';
+import authRouter from './routes/authRouter.js';
 
 dotenv.config();
 
-// Connect to MongoDB & Clear Ghost Sessions
+// Connect to MongoDB (no startup cleanup — data persists across restarts)
 await connectDB();
-try {
-  await Room.updateMany({}, { $set: { participants: [], currentDriverUsername: null } });
-  console.log("Database cleanup: Removed ghost participants.");
-} catch (e) {
-  console.error(e);
-}
 
 const app = express();
 app.use(cors());
@@ -33,6 +27,7 @@ app.use('/api', executeRouter);
 app.use('/api', roomRouter);
 app.use('/api', lectureRouter);
 app.use('/api', commentRouter);
+app.use('/api', authRouter);
 
 const server = http.createServer(app);
 const io = new Server(server, {

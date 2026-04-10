@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, registerUser, logout, clearAuthError } from '../../store/authSlice';
 import { addLog } from '../../store/activityLogSlice';
 import styles from './Navbar.module.css';
 
@@ -8,21 +9,43 @@ export const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useDispatch();
-    const [username, setUsernameState] = useState(() => sessionStorage.getItem('cc_username') || '');
-    const [usernameInput, setUsernameInput] = useState('');
-    const [editingUsername, setEditingUsername] = useState(false);
 
-    const saveUsername = (name) => {
-        const trimmed = name.trim();
-        if (trimmed) {
-            sessionStorage.setItem('cc_username', trimmed);
-            setUsernameState(trimmed);
-            setEditingUsername(false);
-            dispatch(addLog({ text: `Username set to "${trimmed}"`, type: 'success' }));
+    const { username, isLoggedIn, loading, error } = useSelector((state) => state.auth);
+
+    const [authOpen, setAuthOpen] = useState(false);
+    const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+    const [inputUsername, setInputUsername] = useState('');
+    const [inputPassword, setInputPassword] = useState('');
+
+    const isActive = (path) => location.pathname === path;
+
+    const handleAuthSubmit = async (e) => {
+        e.preventDefault();
+        dispatch(clearAuthError());
+
+        if (authMode === 'login') {
+            const resultAction = await dispatch(loginUser({ username: inputUsername, password: inputPassword }));
+            if (loginUser.fulfilled.match(resultAction)) {
+                setAuthOpen(false);
+                dispatch(addLog({ text: `${resultAction.payload.username} logged in`, type: 'success' }));
+                setInputUsername('');
+                setInputPassword('');
+            }
+        } else {
+            const resultAction = await dispatch(registerUser({ username: inputUsername, password: inputPassword }));
+            if (registerUser.fulfilled.match(resultAction)) {
+                setAuthOpen(false);
+                dispatch(addLog({ text: `${resultAction.payload.username} registered and logged in`, type: 'success' }));
+                setInputUsername('');
+                setInputPassword('');
+            }
         }
     };
 
-    const isActive = (path) => location.pathname === path;
+    const handleLogout = () => {
+        dispatch(logout());
+        setAuthOpen(false);
+    };
 
     return (
         <nav className={styles.navbarContainer}>
@@ -50,38 +73,69 @@ export const Navbar = () => {
                 </button>
             </div>
 
-            {/* Username */}
+            {/* Auth Dropdown Area */}
             <div className={styles.navRight}>
-                {editingUsername ? (
-                    <div className={styles.usernameRow}>
-                        <input
-                            className={styles.usernameInput}
-                            type="text"
-                            placeholder="Enter username"
-                            value={usernameInput}
-                            onChange={(e) => setUsernameInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') saveUsername(usernameInput);
-                                if (e.key === 'Escape') setEditingUsername(false);
-                            }}
-                            autoFocus
-                        />
-                        <button className={styles.setBtn} onClick={() => saveUsername(usernameInput)}>Set</button>
+                {isLoggedIn ? (
+                    <div className={styles.userProfile}>
+                        <div
+                            className={styles.usernameDisplay}
+                            onClick={() => setAuthOpen(!authOpen)}
+                        >
+                            <span className={styles.userIcon}>{username?.[0]?.toUpperCase()}</span>
+                            <span>{username}</span>
+                        </div>
+
+                        {authOpen && (
+                            <div className={styles.dropdownMenu}>
+                                <button className={styles.dropdownBtn} onClick={handleLogout}>Logout</button>
+                            </div>
+                        )}
                     </div>
                 ) : (
-                    <div className={styles.usernameDisplay}>
-                        {username ? (
-                            <>
-                                <span className={styles.userIcon}>{username[0].toUpperCase()}</span>
-                                <span>{username}</span>
-                            </>
-                        ) : null}
+                    <div className={styles.authContainer}>
                         <button
-                            className={styles.setUsernameBtn}
-                            onClick={() => { setUsernameInput(username); setEditingUsername(true); }}
+                            className={styles.loginBtn}
+                            onClick={() => setAuthOpen(!authOpen)}
                         >
-                            {username ? 'Change' : 'Set Username'}
+                            Login / Register
                         </button>
+
+                        {authOpen && (
+                            <div className={styles.authDropdown}>
+                                <div className={styles.authTabs}>
+                                    <button
+                                        className={authMode === 'login' ? styles.activeTab : ''}
+                                        onClick={() => { setAuthMode('login'); dispatch(clearAuthError()); }}
+                                    >Login</button>
+                                    <button
+                                        className={authMode === 'register' ? styles.activeTab : ''}
+                                        onClick={() => { setAuthMode('register'); dispatch(clearAuthError()); }}
+                                    >Register</button>
+                                </div>
+                                <form onSubmit={handleAuthSubmit} className={styles.authForm}>
+                                    <input
+                                        type="text"
+                                        placeholder="Username"
+                                        value={inputUsername}
+                                        onChange={(e) => setInputUsername(e.target.value)}
+                                        required
+                                        className={styles.authInput}
+                                    />
+                                    <input
+                                        type="password"
+                                        placeholder="Password"
+                                        value={inputPassword}
+                                        onChange={(e) => setInputPassword(e.target.value)}
+                                        required
+                                        className={styles.authInput}
+                                    />
+                                    {error && <div className={styles.authError}>{error}</div>}
+                                    <button type="submit" className={styles.authSubmit} disabled={loading}>
+                                        {loading ? '...' : (authMode === 'login' ? 'Login' : 'Create Account')}
+                                    </button>
+                                </form>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
