@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import Editor from '@monaco-editor/react';
 import { Navbar } from '../../components/Navbar/Navbar';
 import Terminal from '../../components/Terminal/Terminal';
@@ -34,10 +35,17 @@ export const CreateLecture = () => {
     const timerRef = useRef(null);
     const lastCodeRef = useRef(code);
 
+    const [toast, setToast] = useState(null);
+
+    const showToast = (message, type = 'info') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
+
     useEffect(() => {
         if (!isLoggedIn) {
-            alert('Please log in to create a lecture.');
-            navigate('/learning');
+            showToast('Please log in to create a lecture.', 'error');
+            setTimeout(() => navigate('/learning'), 1000);
         }
     }, [isLoggedIn, navigate]);
 
@@ -122,7 +130,7 @@ export const CreateLecture = () => {
                 throw new Error(data.error || 'Failed to publish');
             }
         } catch (err) {
-            alert('Error publishing lecture: ' + err.message);
+            showToast('Error publishing lecture: ' + err.message, 'error');
             setIsPublishing(false);
         }
     };
@@ -136,7 +144,7 @@ export const CreateLecture = () => {
 
     const handleSetupComplete = () => {
         if (!title.trim()) {
-            alert('Title is required');
+            showToast('Title is required', 'error');
             return;
         }
         setShowSetupModal(false);
@@ -144,6 +152,19 @@ export const CreateLecture = () => {
 
     return (
         <div className={styles.container}>
+            <AnimatePresence>
+                {toast && (
+                    <motion.div
+                        className={`global-toast global-toast_${toast.type}`}
+                        initial={{ opacity: 0, y: -20, x: '-50%' }}
+                        animate={{ opacity: 1, y: 0, x: '-50%' }}
+                        exit={{ opacity: 0, y: -20, x: '-50%' }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {toast.message}
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <Navbar />
 
             {showSetupModal && (

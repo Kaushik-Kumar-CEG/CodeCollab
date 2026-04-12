@@ -78,6 +78,7 @@ export const registerRoomHandlers = (io, socket) => {
         await room.save();
 
         console.log(`[JOIN] ${username} joined room ${roomId} as ${role}`);
+        io.to(roomId).emit('room:notification', { message: `${username} has joined the room.`, type: 'info' });
       } else {
         // Same user opening another tab — just join the socket channel
         console.log(`[REJOIN] ${username} reconnected to room ${roomId}`);
@@ -120,10 +121,13 @@ export const registerRoomHandlers = (io, socket) => {
     try {
       const room = await Room.findOne({ roomId });
       if (room && room.currentDriverUsername) {
-        io.to(roomId).emit('ghost:receive', {
-          senderUsername: socket.data.username,
-          codeDiff
-        });
+        const driverSockets = getSocketsForUser(roomId, room.currentDriverUsername);
+        for (const sid of driverSockets) {
+          io.to(sid).emit('ghost:receive', {
+            senderUsername: socket.data.username,
+            codeDiff
+          });
+        }
       }
     } catch (err) { }
   });
@@ -141,9 +145,12 @@ export const registerRoomHandlers = (io, socket) => {
     try {
       const room = await Room.findOne({ roomId });
       if (room && room.currentDriverUsername) {
-        io.to(roomId).emit('role:request-incoming', {
-          requesterUsername: socket.data.username
-        });
+        const driverSockets = getSocketsForUser(roomId, room.currentDriverUsername);
+        for (const sid of driverSockets) {
+          io.to(sid).emit('role:request-incoming', {
+            requesterUsername: socket.data.username
+          });
+        }
       }
     } catch (err) { }
   });
@@ -165,6 +172,7 @@ export const registerRoomHandlers = (io, socket) => {
       await room.save();
 
       await broadcastRoomState(roomId);
+      io.to(roomId).emit('room:notification', { message: `${newDriverUsername} is now the driver.`, type: 'info' });
     } catch (err) { console.error(err); }
   });
 
@@ -197,6 +205,7 @@ export const registerRoomHandlers = (io, socket) => {
             await room.save();
             await broadcastRoomState(roomId);
             console.log(`[LEAVE] ${username} fully disconnected from room ${roomId}`);
+            io.to(roomId).emit('room:notification', { message: `${username} has left the room.`, type: 'info' });
           }
         } catch (error) {
           console.error(error);

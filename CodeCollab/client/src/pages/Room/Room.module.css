@@ -9,37 +9,6 @@
   position: relative;
 }
 
-/* ── Toast ── */
-.toast {
-  position: fixed;
-  top: 60px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: var(--space-2) var(--space-6);
-  border-radius: var(--radius-md);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  z-index: 200;
-  box-shadow: var(--shadow-md);
-  pointer-events: none;
-}
-
-.toast_info {
-  background-color: var(--accent-primary);
-  color: #fff;
-}
-
-.toast_success {
-  background-color: var(--accent-success);
-  color: #fff;
-}
-
-.toast_error {
-  background-color: var(--accent-error);
-  color: #fff;
-}
-
 /* ── Toolbar ── */
 .toolbar {
   display: flex;

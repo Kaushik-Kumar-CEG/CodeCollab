@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Navbar } from '../../components/Navbar/Navbar';
 import styles from './Learning.module.css';
 
@@ -13,6 +13,12 @@ export const Learning = () => {
     const [lectures, setLectures] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all'); // 'all' or 'mine'
+    const [toast, setToast] = useState(null);
+
+    const showToast = (message, type = 'info') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
+    };
 
     const fetchLectures = () => {
         setLoading(true);
@@ -41,10 +47,10 @@ export const Learning = () => {
                 setLectures(prev => prev.filter(l => l.lectureId !== lectureId));
             } else {
                 const data = await res.json();
-                alert(data.error || 'Failed to delete lecture');
+                showToast(data.error || 'Failed to delete lecture', 'error');
             }
         } catch (err) {
-            alert('Error deleting lecture.');
+            showToast('Error deleting lecture.', 'error');
         }
     };
 
@@ -55,6 +61,19 @@ export const Learning = () => {
 
     return (
         <div className={styles.container}>
+            <AnimatePresence>
+                {toast && (
+                    <motion.div
+                        className={`global-toast global-toast_${toast.type}`}
+                        initial={{ opacity: 0, y: -20, x: '-50%' }}
+                        animate={{ opacity: 1, y: 0, x: '-50%' }}
+                        exit={{ opacity: 0, y: -20, x: '-50%' }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {toast.message}
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <Navbar />
             <main className={styles.main}>
                 <motion.div
@@ -80,7 +99,7 @@ export const Learning = () => {
                     </div>
 
                     <div className={styles.terminalBody}>
-                        
+
                         <div className={styles.filterBar}>
                             <div className={styles.tabs}>
                                 <button
@@ -134,7 +153,7 @@ export const Learning = () => {
                                                 <span className={styles.lectureDesc}>{lecture.description}</span>
                                             )}
                                             <span className={styles.lectureMeta}>
-                                                Owner: {lecture.instructorName} | Lecture ID: {lecture.lectureId.substring(0,8)}
+                                                Owner: {lecture.instructorName} | Lecture ID: {lecture.lectureId.substring(0, 8)}
                                             </span>
                                         </div>
                                         <div className={styles.lectureActions}>

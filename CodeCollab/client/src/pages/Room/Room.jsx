@@ -95,7 +95,11 @@ export const Room = () => {
     });
 
     newSocket.on('ghost:accepted', () => {
-      showToast('Your merge proposal was accepted!', 'success');
+      showToast('A merge proposal was accepted and merged into the main code.', 'success');
+    });
+
+    newSocket.on('room:notification', ({ message, type }) => {
+      showToast(message, type);
     });
 
     newSocket.on('error', ({ message }) => {
@@ -150,7 +154,7 @@ export const Room = () => {
       <AnimatePresence>
         {toast && (
           <motion.div
-            className={`${styles.toast} ${styles[`toast_${toast.type}`]}`}
+            className={`global-toast global-toast_${toast.type}`}
             initial={{ opacity: 0, y: -20, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -20, x: '-50%' }}
@@ -252,6 +256,8 @@ export const Room = () => {
               username={username}
               socket={socket}
               roomId={roomId}
+              selectionRange={selectionRange}
+              showToast={showToast}
             />
             <div className={styles.editorWrapper}>
               <EditorComponent

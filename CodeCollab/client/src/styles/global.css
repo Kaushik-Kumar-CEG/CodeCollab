@@ -16,13 +16,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code, pre {
+code,
+pre {
   font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.5;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--space-4);
@@ -113,4 +119,35 @@ select:focus-visible {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
+}
+
+/* ── Global Toast ── */
+.global-toast {
+  position: fixed;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  z-index: 200;
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+}
+
+.global-toast_info {
+  background-color: var(--accent-primary);
+  color: #fff;
+}
+
+.global-toast_success {
+  background-color: var(--accent-success);
+  color: #fff;
+}
+
+.global-toast_error {
+  background-color: var(--accent-error);
+  color: #fff;
 }

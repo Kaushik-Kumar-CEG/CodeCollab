@@ -31,6 +31,8 @@ const EditorComponent = ({ socket, roomId, isDriver, isScratchpad, overrideCode,
             lineStart: sel.startLineNumber,
             lineEnd: sel.endLineNumber
           });
+        } else {
+          onSelectionChange(null);
         }
       });
     }
